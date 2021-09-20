@@ -10,6 +10,7 @@ import os
 import os.path as osp
 import time
 import warnings
+import pprint
 
 import mmcv
 import torch
@@ -92,9 +93,25 @@ def parse_args():
 
 
 def main():
+    print('MAIN EXECUTION...')
+
     args = parse_args()
 
     cfg = Config.fromfile(args.config)
+   
+    #pprint.pprint(cfg.model)
+    #print('EXITING')
+    #exit()
+
+    if cfg.runner.type == 'IterBasedRunner' and 'max_epochs' in cfg.runner:
+        del cfg.runner['max_epochs']
+    elif cfg.runner.type == 'EpochBasedRunner' and 'max_iters' in cfg.runner:
+        del cfg.runner['max_iters']
+
+    for key in cfg.keys():
+        print('KEY -----------------> ', key)
+        pprint.pprint(cfg[key])
+
     if args.cfg_options is not None:
         cfg.merge_from_dict(args.cfg_options)
     # import modules from string list.
