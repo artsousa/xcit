@@ -1,3 +1,37 @@
+2021-09-21 21:33:50,281 - mmdet - INFO - Environment info:
+------------------------------------------------------------
+sys.platform: linux
+Python: 3.7.12 (default, Sep 10 2021, 00:21:48) [GCC 7.5.0]
+CUDA available: True
+GPU 0: Tesla K80
+CUDA_HOME: /usr/local/cuda
+NVCC: Build cuda_11.1.TC455_06.29190527_0
+GCC: gcc (Ubuntu 7.5.0-3ubuntu1~18.04) 7.5.0
+PyTorch: 1.8.0
+PyTorch compiling details: PyTorch built with:
+  - GCC 7.3
+  - C++ Version: 201402
+  - Intel(R) Math Kernel Library Version 2020.0.0 Product Build 20191122 for Intel(R) 64 architecture applications
+  - Intel(R) MKL-DNN v1.7.0 (Git Hash 7aed236906b1f7a05c0917e5257a1af05e9ff683)
+  - OpenMP 201511 (a.k.a. OpenMP 4.5)
+  - NNPACK is enabled
+  - CPU capability usage: AVX2
+  - CUDA Runtime 10.2
+  - NVCC architecture flags: -gencode;arch=compute_37,code=sm_37;-gencode;arch=compute_50,code=sm_50;-gencode;arch=compute_60,code=sm_60;-gencode;arch=compute_70,code=sm_70
+  - CuDNN 7.6.5
+  - Magma 2.5.2
+  - Build settings: BLAS_INFO=mkl, BUILD_TYPE=Release, CUDA_VERSION=10.2, CUDNN_VERSION=7.6.5, CXX_COMPILER=/opt/rh/devtoolset-7/root/usr/bin/c++, CXX_FLAGS= -Wno-deprecated -fvisibility-inlines-hidden -DUSE_PTHREADPOOL -fopenmp -DNDEBUG -DUSE_KINETO -DUSE_FBGEMM -DUSE_QNNPACK -DUSE_PYTORCH_QNNPACK -DUSE_XNNPACK -O2 -fPIC -Wno-narrowing -Wall -Wextra -Werror=return-type -Wno-missing-field-initializers -Wno-type-limits -Wno-array-bounds -Wno-unknown-pragmas -Wno-sign-compare -Wno-unused-parameter -Wno-unused-variable -Wno-unused-function -Wno-unused-result -Wno-unused-local-typedefs -Wno-strict-overflow -Wno-strict-aliasing -Wno-error=deprecated-declarations -Wno-stringop-overflow -Wno-psabi -Wno-error=pedantic -Wno-error=redundant-decls -Wno-error=old-style-cast -fdiagnostics-color=always -faligned-new -Wno-unused-but-set-variable -Wno-maybe-uninitialized -fno-math-errno -fno-trapping-math -Werror=format -Wno-stringop-overflow, LAPACK_INFO=mkl, PERF_WITH_AVX=1, PERF_WITH_AVX2=1, PERF_WITH_AVX512=1, TORCH_VERSION=1.8.0, USE_CUDA=ON, USE_CUDNN=ON, USE_EXCEPTION_PTR=1, USE_GFLAGS=OFF, USE_GLOG=OFF, USE_MKL=ON, USE_MKLDNN=ON, USE_MPI=OFF, USE_NCCL=ON, USE_NNPACK=ON, USE_OPENMP=ON, 
+
+TorchVision: 0.9.0
+OpenCV: 4.1.2
+MMCV: 1.3.0
+MMCV Compiler: GCC 7.5
+MMCV CUDA Compiler: 11.1
+MMDetection: 2.11.0+7a861f8
+------------------------------------------------------------
+
+2021-09-21 21:33:50,898 - mmdet - INFO - Distributed training: True
+2021-09-21 21:33:51,473 - mmdet - INFO - Config:
 model = dict(
     type='FasterRCNN',
     pretrained=
@@ -36,7 +70,7 @@ model = dict(
             type='CrossEntropyLoss', use_sigmoid=True, loss_weight=1.0),
         loss_bbox=dict(type='L1Loss', loss_weight=1.0)),
     roi_head=dict(
-        type='StandardRoIHead',
+        type='StandardRoIExtractor',
         bbox_roi_extractor=dict(
             type='SingleRoIExtractor',
             roi_layer=dict(type='RoIAlign', output_size=7, sampling_ratio=0),
@@ -61,7 +95,14 @@ model = dict(
             roi_layer=dict(type='RoIAlign', output_size=14, sampling_ratio=0),
             out_channels=256,
             featmap_strides=[8, 8, 8, 8]),
-        mask_head=None),
+        mask_head=dict(
+            type='FCNMaskHead',
+            num_convs=4,
+            in_channels=256,
+            conv_out_channels=256,
+            num_classes=80,
+            loss_mask=dict(
+                type='CrossEntropyLoss', use_mask=True, loss_weight=1.0))),
     train_cfg=dict(
         rpn=dict(
             assigner=dict(
@@ -234,3 +275,5 @@ pclasses = 11
 classes = ('0', '1', '2', '3', '4', '5', '6', '7', '8', '9', 'screen')
 work_dir = '/content/xcit/detection/outputs'
 gpu_ids = range(0, 1)
+
+2021-09-21 21:33:51,560 - mmdet - INFO - Set random seed to 42, deterministic: True
