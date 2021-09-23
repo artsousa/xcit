@@ -7,7 +7,7 @@ https://github.com/SwinTransformer/Swin-Transformer-Object-Detection
 
 pclasses = 11
 dataset_type = 'CocoDataset'
-data_root = '/content/drive/MyDrive/UTI'
+data_root = '/home/arthursvrr/UTI'
 _base_ = [
     '../_base_/models/mask_rcnn_xcit_p8.py',
     '../_base_/datasets/coco_instance.py',
@@ -23,13 +23,13 @@ model = dict(
         type='XCiT',
         num_classes=pclasses,
         patch_size=8,
-        embed_dim=384,
+        embed_dim=192,
         depth=12,
-        num_heads=8,
+        num_heads=4,
         mlp_ratio=4,
         qkv_bias=True,
         eta=1.0,
-        drop_path_rate=0.05,
+        drop_path_rate=0.0,
         out_indices=[3, 5, 7, 11]
     ),
     neck=dict(
@@ -131,7 +131,7 @@ model = dict(
 )
 
 img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=False)
 
 # augmentation strategy originates from DETR / Sparse RCNN
 train_pipeline = [
@@ -158,7 +158,7 @@ test_pipeline = [
 ]
 
 data = dict(
-        samples_per_gpu=5,
+        samples_per_gpu=2,
         workers_per_gpu=1,
         train=dict(
             type=dataset_type,
@@ -192,7 +192,7 @@ lr_config = dict(
     warmup_ratio=0.001,
     step=[8, 11])
 
-runner = dict(type='EpochBasedRunner', max_epochs=8)
+runner = dict(type='EpochBasedRunner', max_epochs=1)
 #runner = dict(type='IterBasedRunner', max_iters=2)
 
 checkpoint_config = dict(interval=1)
@@ -205,6 +205,9 @@ log_level = 'INFO'
 load_from = None
 resume_from = None
 workflow = [('train', 1)]
+evaluation = dict(    
+    interval=1,  
+    metric=['bbox'])
 
 # do not use mmdet version fp16
 #fp16 = None

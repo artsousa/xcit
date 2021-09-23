@@ -6,4 +6,5 @@
 events.out.*
 .ipynb_checkpoints/*
 detection/data
+detection/outputs
 semantic_segmentation/data

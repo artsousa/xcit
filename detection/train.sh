@@ -12,4 +12,3 @@ $TOOLS/dist_train.sh \
 	--seed 42 \
 	--gpus 1 \
 	--deterministic \
-	--cfg-options model.pretrained=https://dl.fbaipublicfiles.com/xcit/coco/maskrcnn_xcit_small_12_p8.pth	
