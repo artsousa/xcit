@@ -34,7 +34,7 @@ model = dict(
     ),
     neck=dict(
         type='FPN',
-        in_channels=[384, 384, 384, 384],
+        in_channels=[192, 192, 192, 192],
         out_channels=256,
         num_outs=5),
     rpn_head=dict(
@@ -131,7 +131,7 @@ model = dict(
 )
 
 img_norm_cfg = dict(
-    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=False)
+    mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
 
 # augmentation strategy originates from DETR / Sparse RCNN
 train_pipeline = [
@@ -192,7 +192,7 @@ lr_config = dict(
     warmup_ratio=0.001,
     step=[8, 11])
 
-runner = dict(type='EpochBasedRunner', max_epochs=1)
+runner = dict(type='EpochBasedRunner', max_epochs=2)
 #runner = dict(type='IterBasedRunner', max_iters=2)
 
 checkpoint_config = dict(interval=1)
@@ -210,12 +210,7 @@ evaluation = dict(
     metric=['bbox'])
 
 # do not use mmdet version fp16
-#fp16 = None
-#optimizer_config = dict(
-#    type="DistOptimizerHook",
-#    update_interval=1,
-#    grad_clip=None,
-#    coalesce=True,
-#    bucket_size_mb=-1,
-#    use_fp16=fp16,
-#)
+fp16 = None
+optimizer_config = dict(
+    grad_clip=None,
+)
