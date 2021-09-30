@@ -136,10 +136,13 @@ img_norm_cfg = dict(
 # augmentation strategy originates from DETR / Sparse RCNN
 train_pipeline = [
     dict(type='LoadImageFromFile'),
-    dict(type='LoadAnnotations', with_bbox=True, with_mask=False),
+    dict(type='LoadAnnotations', with_bbox=True, with_mask=False, poly2mask=False),
     dict(type='Resize', img_scale=(1333, 800), keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.0),
-    dict(type='Normalize', **img_norm_cfg),
+    dict(type='Normalize',
+         mean=[123.675, 116.28, 103.53],
+         std=[58.395, 57.12, 57.375], to_rgb=True
+        ),
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
@@ -152,6 +155,12 @@ test_pipeline = [
         img_scale=(1333, 800),
         transforms=[
             dict(type='Resize', keep_ratio=True),
+            dict(type='RandomFlip', flip_ratio=0.0),
+            dict(type='Normalize',
+                mean=[123.675, 116.28, 103.53],
+                std=[58.395, 57.12, 57.375], 
+                to_rgb=True,
+            ),
             dict(type='ImageToTensor', keys=['img']),
             dict(type='Collect', keys=['img']),
         ])
@@ -173,12 +182,12 @@ data = dict(
             ann_file=data_root + '/annotations/testW.json',
             img_prefix=data_root + '/train2017/',
             pipeline=test_pipeline),
-        #test=dict(
-        #    type=dataset_type,
-        #    classes=classes,
-        #    ann_file=data_root + 'annotations/test_splited.json',
-        #    img_prefix=data_root + 'train2017/',
-        #    pipeline=test_pipeline) 
+        test=dict(
+            type=dataset_type,
+            classes=classes,
+            ann_file=data_root + 'annotations/testW.json',
+            img_prefix=data_root + 'train2017/',
+            pipeline=test_pipeline) 
         )
 
 optimizer = dict(_delete_=True, type='AdamW', lr=0.0001, betas=(0.9, 0.999), weight_decay=0.05,
@@ -192,22 +201,20 @@ lr_config = dict(
     warmup_ratio=0.001,
     step=[8, 11])
 
-runner = dict(type='EpochBasedRunner', max_epochs=2)
-#runner = dict(type='IterBasedRunner', max_iters=2)
+runner = dict(type='EpochBasedRunner', max_epochs=18)
+#runner = dict(type='IterBasedRunner', max_iters=100)
 
 checkpoint_config = dict(interval=1)
 log_config = dict( 
-    interval=50,
+    interval=100,
     hooks=[
         dict(type='TextLoggerHook')
     ])
 log_level = 'INFO'
 load_from = None
-resume_from = None
+resume_from = '/home/arthursvrr/xcit/detection/outputs/epoch_14.pth' 
 workflow = [('train', 1)]
-evaluation = dict(    
-    interval=1,  
-    metric=['bbox'])
+evaluation = dict(interval=1, metric=['bbox'])
 
 # do not use mmdet version fp16
 fp16 = None
