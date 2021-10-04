@@ -107,6 +107,7 @@ def parse_args():
 
 
 def main():
+    print('IM HERE')
     args = parse_args()
 
     assert args.out or args.eval or args.format_only or args.show \

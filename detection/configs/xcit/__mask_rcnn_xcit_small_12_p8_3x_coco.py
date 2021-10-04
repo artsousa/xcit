@@ -185,8 +185,8 @@ data = dict(
         test=dict(
             type=dataset_type,
             classes=classes,
-            ann_file=data_root + 'annotations/testW.json',
-            img_prefix=data_root + 'train2017/',
+            ann_file=data_root + '/annotations/testW.json',
+            img_prefix=data_root + '/train2017/',
             pipeline=test_pipeline) 
         )
 
@@ -212,7 +212,7 @@ log_config = dict(
     ])
 log_level = 'INFO'
 load_from = None
-resume_from = '/home/arthursvrr/xcit/detection/outputs/epoch_14.pth' 
+resume_from = None#'/home/arthursvrr/xcit/detection/outputs/epoch_14.pth' 
 workflow = [('train', 1)]
 evaluation = dict(interval=1, metric=['bbox'])
 
