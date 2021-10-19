@@ -26,6 +26,8 @@ from mmdet.utils import collect_env, get_root_logger
 
 from backbone import xcit
 
+import pprint
+
 
 def parse_args():
     parser = argparse.ArgumentParser(description='Train a detector')
@@ -183,6 +185,7 @@ def main():
         train_cfg=cfg.get('train_cfg'),
         test_cfg=cfg.get('test_cfg'))
 
+    
     datasets = [build_dataset(cfg.data.train)]
     if len(cfg.workflow) == 2:
         val_dataset = copy.deepcopy(cfg.data.val)
