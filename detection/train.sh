@@ -2,7 +2,7 @@
 
 WK_DIR=$(pwd)
 
-CFGS=$WK_DIR/configs/xcit/retinanet
+CFGS=$WK_DIR/configs/xcit/faster
 TOOLS=$WK_DIR/tools
 #BBONE=$WK_DIR/backbone
 
