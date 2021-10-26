@@ -1,9 +1,9 @@
 dataset_type = 'CocoDataset'
-data_root = '/home/arthurricardo98/MONITORS'
+data_root = '/home/arthursvrr/MONITORS'
 
-img_prefix = data_root + '/monitors/'
-ann_test = data_root + '/annotations/monitors_rgb/monitorsrgb_test.json' 
-ann_train = data_root + '/annotations/monitors_rgb/monitorsrgb_train.json' 
+img_prefix = data_root + '/monitorsv2/'
+ann_test = data_root + '/annotations/monitors_train/monitorsv2_test.json' 
+ann_train = data_root + '/annotations/monitors_train/monitorsv2_train.json' 
 
 pclasses = 1
 log_config = dict(
@@ -19,14 +19,14 @@ checkpoint_config = dict(interval=1)
 dist_params = dict(backend='nccl')
 log_level = 'INFO'
 load_from = None
-resume_from = '/home/arthurricardo98/xcit/detection/outputs/epoch_20.pth'
+resume_from = None # '/home/arthurricardo98/xcit/detection/outputs/epoch_20.pth'
 workflow = [('train', 1)]
 log_level = 'INFO'
 evaluation = dict(interval=1, metric='bbox')
 runner = dict(type='EpochBasedRunner', max_epochs=30)
 
 fp16 = None
-im_size = (500, 500)
+im_size = (800, 800)
 
 optimizer_config = dict(grad_clip=dict(max_norm=25, norm_type=2))
 img_norm_cfg = dict(mean=[123.675, 116.28, 103.53], std=[58.395, 57.12, 57.375], to_rgb=True)
@@ -37,7 +37,7 @@ train_pipeline = [
     dict(type='Resize', img_scale=im_size, keep_ratio=True),
     dict(type='RandomFlip', flip_ratio=0.0),
     dict(type='Normalize', **img_norm_cfg),
-    #dict(type='Pad', size_divisor=32),
+    dict(type='Pad', size_divisor=32),
     dict(type='DefaultFormatBundle'),
     dict(type='Collect', keys=['img', 'gt_bboxes', 'gt_labels']),
 ]
@@ -51,13 +51,13 @@ test_pipeline = [
             dict(type='Resize', keep_ratio=True),
             dict(type='RandomFlip'),
             dict(type='Normalize', **img_norm_cfg),
-            #dict(type='Pad', size_divisor=32),
+            dict(type='Pad', size_divisor=32),
             dict(type='ImageToTensor', keys=['img']),
             dict(type='Collect', keys=['img']),
         ])
 ]
 data = dict(
-    samples_per_gpu=32,
+    samples_per_gpu=8,
     workers_per_gpu=1,
     train=dict(
         type=dataset_type,
