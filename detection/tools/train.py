@@ -100,6 +100,7 @@ def main():
     cfg = Config.fromfile(args.config)
    
     #pprint.pprint(cfg.model)
+    #pprint.pprint(cfg.data)
     #print('EXITING')
     #exit()
 
